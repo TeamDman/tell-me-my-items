@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { readFileSync } from 'fs';
 
 export class Store {
     private items = [];
@@ -7,7 +8,7 @@ export class Store {
     }
     private getContent(path: string): Promise<string> {
         return new Promise((res, rej) => {
-            vscode.workspace.openTextDocument(path).then(doc => res(doc.getText()));
+            res(readFileSync(path, {encoding:"utf-8"}));
         });
     }
     public async loadItemsFromDisk(path: string) {
@@ -20,6 +21,9 @@ export class Store {
             }
             return rtn;
         });
-        // this.items = JSON.parse(FileSystemProv(path,{encoding:"utf8",flag:"r"})!);
+    }
+
+	public clearItems() {
+        this.items = [];        
     }
 }
