@@ -1,7 +1,6 @@
 package ca.teamdman.tellmemyitems;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.NonNullList;
@@ -12,11 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLConfig;
 import net.minecraftforge.fml.loading.FMLPaths;
-import org.lwjgl.system.CallbackI;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -35,20 +30,38 @@ public class TellMeMyItems {
 
 	private static final Logger LOGGER = LogUtils.getLogger();
 
-	public TellMeMyItems() {
-		// Register the setup method for modloading
-		FMLJavaModLoadingContext.get()
-				.getModEventBus()
-				.addListener(this::setup);
+	public TellMeMyItems() {}
 
-		// Register ourselves for server and other game events we are interested in
-		//		MinecraftForge.EVENT_BUS.register(this);
+	public static void dumpItems() throws IOException {
+		var items   = gatherItems();
+		var gameDir = FMLPaths.GAMEDIR.get();
+		var folder  = Paths.get(gameDir.toString(), "tmmi");
+
+		// ensure folder exists
+		Files.createDirectories(folder);
+
+		// serialize items
+		var mappedItems = items.stream()
+				.map(JsonItem::new)
+				.toList();
+		Gson gson    = new Gson();
+		var  content = gson.toJson(mappedItems);
+
+		// write to file
+		File itemFile = new File(folder.toFile(), "items.json");
+		try (FileOutputStream str = new FileOutputStream(itemFile)) {
+			str.write(content.getBytes(StandardCharsets.UTF_8));
+		}
+		LOGGER.info("Exported item data to {}", itemFile);
 	}
 
-	private void setup(final FMLCommonSetupEvent event) {
-		// some preinit code
-		//		LOGGER.info("HELLO FROM PREINIT");
-		//		LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+	public static NonNullList<ItemStack> gatherItems() {
+		var items = NonNullList.<ItemStack>create();
+		for (Item item : Registry.ITEM) {
+			if (item == null) continue;
+			item.fillItemCategory(CreativeModeTab.TAB_SEARCH, items);
+		}
+		return items;
 	}
 
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -58,38 +71,14 @@ public class TellMeMyItems {
 			event.getDispatcher()
 					.register(Commands.literal("tmmiexport")
 									  .executes(context -> {
-										  System.out.println("Writing item data...");
-										  dumpItems();
+										  LOGGER.info("Exporting data");
+										  try {
+											  dumpItems();
+										  } catch (IOException e) {
+											  LOGGER.error("Error dumping data", e);
+										  }
 										  return SINGLE_SUCCESS;
 									  }));
-		}
-	}
-
-	public static void dumpItems() {
-		var searchableItems = NonNullList.<ItemStack>create();
-		for (Item item : Registry.ITEM) {
-			if (item == null) continue;
-			item.fillItemCategory(CreativeModeTab.TAB_SEARCH, searchableItems);
-//			for (CreativeModeTab tab : CreativeModeTab.TABS) {
-//				item.fillItemCategory(tab, searchableItems);
-//			}
-		}
-		var folder = Paths.get(FMLPaths.GAMEDIR.get()
-									   .toString(), "tmmi");
-		try {
-			Files.createDirectories(folder);
-			File itemFile = new File(folder.toFile(), "items.json");
-			Gson gson     = new Gson();
-			var  content  = gson.toJson(searchableItems.stream()
-												.map(JsonItem::new)
-												.toList());
-			try (FileOutputStream str = new FileOutputStream(itemFile)) {
-				str.write(content.getBytes(StandardCharsets.UTF_8));
-			}
-
-
-		} catch (IOException e) {
-			throw new RuntimeException(e);
 		}
 	}
 }
