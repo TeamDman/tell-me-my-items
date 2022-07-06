@@ -40,13 +40,10 @@ export async function activate(context: vscode.ExtensionContext) {
     },
   };
 
-  const langs = ["sfml","zenscript","javascript","typescript"];
+  const langs = ["sfml", "zenscript", "javascript", "typescript"];
   for (const language of langs) {
     context.subscriptions.push(
-      vscode.languages.registerCompletionItemProvider(
-        { language },
-        provider
-      )
+      vscode.languages.registerCompletionItemProvider({ language }, provider)
     );
   }
 
@@ -60,8 +57,9 @@ export async function activate(context: vscode.ExtensionContext) {
       store.clearItems()
     )
   );
-
-  reloadFromPath();
+  if (vscode.workspace.getConfiguration("tmmi").autoLoad) {
+    reloadFromPath();
+  }
 }
 
 // this method is called when your extension is deactivated

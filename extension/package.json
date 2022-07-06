@@ -2,7 +2,7 @@
   "name": "tell-me-my-items",
   "displayName": "tell-me-my-items",
   "description": "Intellisense for Minecraft",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.68.0"
   },
@@ -27,6 +27,12 @@
           "type": "string",
           "markdownDescription": "Path",
           "scope": "window"
+        },
+        "tmmi.autoLoad": {
+          "type": "boolean",
+          "markdownDescription": "Auto Load",
+          "scope": "window",
+          "default": false
         }
       }
     },
@@ -41,6 +47,7 @@
       }
 		]
   },
+  "publisher": "TeamDman",
   "repository": {
     "type": "git",
     "url": "https://github.com/TeamDman/tell-me-my-items",
