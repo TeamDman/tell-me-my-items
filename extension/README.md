@@ -7,7 +7,7 @@ https://www.curseforge.com/minecraft/mc-mods/tell-me-my-items
 
 ## Features
 
-![example](images/Code_lL8Nb7t7WP.gif)
+![example](https://i.imgur.com/nNdOes9.gif)
 
 - Autosuggest
 - Command: reload from json
@@ -16,10 +16,12 @@ https://www.curseforge.com/minecraft/mc-mods/tell-me-my-items
 ## Requirements
 
 You must use the MC mod to generate a json file, there are none provided by default.
+Additionally, suggestions are not loaded by default. Use the reload command to load manualy, or turn on the auto load preference.
 
 ## Extension Settings
 
-Configure the tmmi.path preference to point to the json correctly.
+- `tmmi.path` - path to json file to load
+- `tmmi.autoLoad` - load suggestions automatically, default: false
 
 ## Known Issues
 
@@ -27,6 +29,10 @@ It's always suggesting.
 
 ## Release Notes
 
-### 1.0.0
+### 0.0.1
 
 Initial release, woot!
+
+### 0.0.2
+
+Added new preference to control auto loading, disabled by default.
