@@ -50,8 +50,7 @@
   "publisher": "TeamDman",
   "repository": {
     "type": "git",
-    "url": "https://github.com/TeamDman/tell-me-my-items",
-    "directory": "extension"
+    "url": "https://github.com/TeamDman/tell-me-my-items"
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
