@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { readFileSync, existsSync } from 'fs';
+import * as pathlib from "path";
 
 export class Store {
     private items = [];
@@ -8,6 +9,13 @@ export class Store {
     }
     private getContent(path: string): Promise<string> {
         return new Promise((res, rej) => {
+            for (const folder of vscode.workspace.workspaceFolders || []) {
+                const fullPath = pathlib.resolve(folder.uri.fsPath, path);
+                if (existsSync(fullPath)) {
+                    res(readFileSync(fullPath, {encoding:"utf-8"}));
+                    return;
+                }
+            }
             if (!existsSync(path)) {
                 vscode.window.showErrorMessage("TMMI json not found at " + path);
                 rej(new Error("notfound"));
