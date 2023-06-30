@@ -67,11 +67,6 @@ public class TellMeMyItems {
                 true,
                 Minecraft.getInstance().level.registryAccess()
         );
-//		CreativeModeTabs.SEARCH.buildContents(new CreativeModeTab.ItemDisplayParameters(
-//				Minecraft.getInstance().player.connection.enabledFeatures(),
-//				true,
-//				Minecraft.getInstance().level.registryAccess()
-//		));
         return CreativeModeTabs.SEARCH.getDisplayItems();
     }
 
