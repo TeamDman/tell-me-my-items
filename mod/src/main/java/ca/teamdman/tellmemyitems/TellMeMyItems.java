@@ -67,12 +67,7 @@ public class TellMeMyItems {
                 true,
                 Minecraft.getInstance().level.registryAccess()
         );
-//		CreativeModeTabs.SEARCH.buildContents(new CreativeModeTab.ItemDisplayParameters(
-//				Minecraft.getInstance().player.connection.enabledFeatures(),
-//				true,
-//				Minecraft.getInstance().level.registryAccess()
-//		));
-        return CreativeModeTabs.SEARCH.getDisplayItems();
+        return CreativeModeTabs.searchTab().getDisplayItems();
     }
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
